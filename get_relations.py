@@ -8,7 +8,7 @@ nlp = spacy.load("ru_core_news_lg")
 nlp.max_length = 3000000
 
 
-class PrecisionCharacterResolver:
+class CharacterResolver:
     def __init__(self, character_file):
         self.characters = set()
         self.name_variants = defaultdict(set)
@@ -173,7 +173,7 @@ def main():
         print("Добавьте файлы книг в папку books!")
         return
 
-    resolver = PrecisionCharacterResolver("characters.txt")
+    resolver = CharacterResolver("characters.txt")
     all_relations = defaultdict(Counter)
 
     with ThreadPoolExecutor(max_workers=4) as executor:
