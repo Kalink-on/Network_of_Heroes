@@ -24,7 +24,7 @@ def create_graph(data):
     return G
 
 
-def get_blue_gradient_color(intensity):
+def blue_gradient(intensity):
     hue = 240 / 360
     saturation = 0.9
     lightness = 0.85 - (0.7 * intensity)
@@ -73,7 +73,7 @@ def interactive(G, character_info):
             weight = G.edges[edge]['weight']
             normalized_width = max(1, min(8, 1 + 7 * (weight - min_weight) / weight_range))
             intensity = (weight - min_weight) / weight_range
-            color = get_blue_gradient_color(intensity)
+            color = blue_gradient(intensity)
 
             edge_trace = go.Scatter(
                 x=[x0, x1, None],
