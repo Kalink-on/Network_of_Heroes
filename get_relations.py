@@ -63,13 +63,33 @@ class CharacterResolver:
                 self.context_window.pop(0)
 
     def process_dialogue(self, token):
-        if token.text in ('"', "'", '«', '»'):
-            self.in_dialogue = not self.in_dialogue
-            if not self.in_dialogue:
-                participants = list(self.dialogue_participants)
-                self.dialogue_participants = set()
-                return participants
+    if token.text == '—' and (token.i == 0 or
+                                doc[token.i - 1].is_punct or
+                                doc[token.i - 1].is_space):
+        self.in_dialogue = True
+        self.dialogue_started = True
         return []
+
+    if (self.in_dialogue and token.text == '—' and
+            token.i > 0 and doc[token.i - 1].is_space and
+            token.i + 1 < len(doc) and doc[token.i + 1].is_space):
+        self.dialogue_started = False
+        return []
+
+    if (not self.dialogue_started and token.text == '—' and
+            token.i > 0 and doc[token.i - 1].is_space):
+        self.dialogue_started = True
+        return []
+
+    if (self.in_dialogue and self.dialogue_started and
+            token.text in ('.', '!', '?', '…')):
+        self.in_dialogue = False
+        self.dialogue_started = False
+        participants = list(self.dialogue_participants)
+        self.dialogue_participants = set()
+        return participants
+
+    return []
 
 
 def analyze_interactions(doc, resolver):
