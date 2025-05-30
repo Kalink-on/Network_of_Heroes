@@ -23,6 +23,7 @@ class CharacterResolver:
         self.gender_cache = {}
         self.dialogue_participants = set()
         self.in_dialogue = False
+        self.dialogue_started = False
 
     def load_characters(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
