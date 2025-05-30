@@ -63,8 +63,8 @@ class CharacterResolver:
                 self.context_window.pop(0)
 
     def process_dialogue(self, token):
-    if token.text == '—' and (token.i == 0 or
-                                doc[token.i - 1].is_punct or
+    if token.text == '—' and (token.i == 0 or 
+                                doc[token.i - 1].is_punct or 
                                 doc[token.i - 1].is_space):
         self.in_dialogue = True
         self.dialogue_started = True
@@ -81,10 +81,13 @@ class CharacterResolver:
         self.dialogue_started = True
         return []
 
-    if (self.in_dialogue and self.dialogue_started and
-            token.text in ('.', '!', '?', '…')):
+    if (self.in_dialogue and token.text == '.' and
+            token.i + 1 < len(doc) and not doc[token.i + 1].text == '—'):
+        return []
+
+    if (self.in_dialogue and token.text in ('.', '!', '?', '…') and
+            (token.i + 1 >= len(doc))):
         self.in_dialogue = False
-        self.dialogue_started = False
         participants = list(self.dialogue_participants)
         self.dialogue_participants = set()
         return participants
